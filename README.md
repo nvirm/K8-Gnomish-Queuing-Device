@@ -1,5 +1,5 @@
 # K8 Gnomish Queuing Device
-![alt text](https://github.com/kitsun8/K8Gatheriino/blob/master/Screenshot/K8GQD.PNG)
+![alt text](https://github.com/kitsun8/K8-Gnomish-Queuing-Device/blob/master/Screenshot/K8GDC.png)
 
 # How to use?
 1. Get your Pushbullet API key from https://www.pushbullet.com/#settings (create access token).
