@@ -45,7 +45,7 @@
             this.btn_autoRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_autoRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_autoRefresh.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btn_autoRefresh.Location = new System.Drawing.Point(873, 398);
+            this.btn_autoRefresh.Location = new System.Drawing.Point(524, 338);
             this.btn_autoRefresh.Name = "btn_autoRefresh";
             this.btn_autoRefresh.Size = new System.Drawing.Size(123, 31);
             this.btn_autoRefresh.TabIndex = 1;
@@ -64,7 +64,7 @@
             this.resultBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.resultBox.Location = new System.Drawing.Point(12, 12);
             this.resultBox.Name = "resultBox";
-            this.resultBox.Size = new System.Drawing.Size(984, 380);
+            this.resultBox.Size = new System.Drawing.Size(635, 277);
             this.resultBox.TabIndex = 7;
             this.resultBox.TabStop = false;
             // 
@@ -72,7 +72,7 @@
             // 
             this.txt_currPosi.AutoSize = true;
             this.txt_currPosi.ForeColor = System.Drawing.SystemColors.Control;
-            this.txt_currPosi.Location = new System.Drawing.Point(12, 401);
+            this.txt_currPosi.Location = new System.Drawing.Point(9, 343);
             this.txt_currPosi.Name = "txt_currPosi";
             this.txt_currPosi.Size = new System.Drawing.Size(201, 13);
             this.txt_currPosi.TabIndex = 8;
@@ -82,7 +82,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.Location = new System.Drawing.Point(279, 400);
+            this.label1.Location = new System.Drawing.Point(9, 356);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(32, 13);
             this.label1.TabIndex = 9;
@@ -92,7 +92,7 @@
             // 
             this.txt_loglabel.AutoSize = true;
             this.txt_loglabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.txt_loglabel.Location = new System.Drawing.Point(317, 400);
+            this.txt_loglabel.Location = new System.Drawing.Point(47, 356);
             this.txt_loglabel.Name = "txt_loglabel";
             this.txt_loglabel.Size = new System.Drawing.Size(245, 13);
             this.txt_loglabel.TabIndex = 10;
@@ -102,8 +102,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(1008, 441);
+            this.BackColor = System.Drawing.Color.Gray;
+            this.ClientSize = new System.Drawing.Size(659, 375);
             this.Controls.Add(this.txt_loglabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txt_currPosi);
@@ -126,9 +126,9 @@
         #endregion
         public System.Windows.Forms.Timer AutoRefresh;
         public System.Windows.Forms.Button btn_autoRefresh;
-        private System.Windows.Forms.Label label1;
         public System.Windows.Forms.Label txt_loglabel;
         public System.Windows.Forms.Label txt_currPosi;
         public System.Windows.Forms.PictureBox resultBox;
+        public System.Windows.Forms.Label label1;
     }
 }

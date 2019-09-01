@@ -29,7 +29,7 @@ namespace Gnomish_queuing_device
 
         public static bool startingMsgsent = false;
 
-        public static DateTime pushTime = DateTime.Now; //Defaulttime
+        public static DateTime pushTime = new DateTime(2005, 7, 15, 3, 15, 0); //Defaulttime, way back :)...
         public static int pushtype = 0;
         
     }

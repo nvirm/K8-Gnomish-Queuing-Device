@@ -66,7 +66,13 @@ namespace Gnomish_queuing_device
             */
             try
             {
-                
+
+                //0 Hide text elements from UI (while snipping
+                mainForm.btn_autoRefresh.Visible = false;
+                mainForm.txt_currPosi.Visible = false;
+                mainForm.txt_loglabel.Visible = false;
+                mainForm.label1.Visible = false;
+                mainForm.Text = "";
 
                 //1
                 Point bounds = new Point(mainForm.Bounds.Top, mainForm.Bounds.Left);
@@ -80,17 +86,15 @@ namespace Gnomish_queuing_device
                     {
                         graphics.CopyFromScreen(new Point
                         (mainForm.Bounds.Left, mainForm.Bounds.Top), Point.Empty, canvasBounds.Size);
-                        //graphics.CopyFromScreen(new Point
-                        //(canvasBounds.Left, canvasBounds.Top), Point.Empty, canvasBounds.Size);
                     }
 
                     //2
                     var bmresult = image;
-                    //File.Delete(Application.StartupPath + "\\ocr.png");
+                    //File.Delete(Application.StartupPath + "\\ocr.png"); --keep incase things break
 
                     bmresult.Save(Application.StartupPath + "\\ocr.png", System.Drawing.Imaging.ImageFormat.Png);
-                    bmresult.Dispose();
-                    graphics.Dispose();
+                    //bmresult.Dispose(); --keep incase things break
+                    //graphics.Dispose(); --keep incase things break
                 }
 
                 //3
@@ -104,6 +108,13 @@ namespace Gnomish_queuing_device
 
 
                 ocrimage.Dispose();
+
+                //Return hidden values
+                mainForm.btn_autoRefresh.Visible = true;
+                mainForm.txt_currPosi.Visible = true;
+                mainForm.txt_loglabel.Visible = true;
+                mainForm.label1.Visible = true;
+                mainForm.Text = "K8 Gnomish Queuing Device";
 
                 //4a - Assign relevant data
 
@@ -133,7 +144,7 @@ namespace Gnomish_queuing_device
                     }
 
                 }
-                else if(stringresult.Contains("Error") | stringresult.Contains("Disconnected") | stringresult.Contains("WOW51900319") | stringresult.Contains("BLZ51901016") | stringresult.Contains("disconnected") | stringresult.Contains("You have been disconnected from the server."))
+                else if(stringresult.Contains("Error") | stringresult.Contains("Disconnected") | stringresult.Contains("WOW51900319") | stringresult.Contains("BLZ51901016") | stringresult.Contains("disconnected") | stringresult.Contains("You have been disconnected from the server.") | stringresult.Contains("Account Name"))
                 {
                     //Expected error input, no need to parse though
                     ProgHelpers.pushtype = 2;
@@ -181,37 +192,62 @@ namespace Gnomish_queuing_device
                 {
                     if (ProgHelpers.qpositions.Count > 0)
                     {
-
-
-                        //Elapsed time
-                        DateTime nowtime = DateTime.Now;
-                        TimeSpan span = nowtime.Subtract(ProgHelpers.startingTime);
-
-                        //Sent recently? Send every 5 minutes when under 1000 in queue
-                        TimeSpan sincelastsend = nowtime.Subtract(ProgHelpers.pushTime);
-
-                        if (ProgHelpers.qpositions.Min() < 1000)
+                        if (ProgHelpers.startingMsgsent == false)
                         {
-                            if (sincelastsend.TotalMinutes > 5)
-                            {
-                                string bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.TotalHours + " Hours " + span.TotalMinutes + " Minutes.";
-                                if (currentUserInformation != null)
-                                {
-                                    PushNoteRequest request = new PushNoteRequest
-                                    {
-                                        Email = currentUserInformation.Email,
-                                        Title = "Gnomish Queuing Device",
-                                        Body = bodymsg
-                                    };
+                            string bodymsg = "Queue Watcher started, no position information yet.";
 
-                                    PushResponse response = client.PushNote(request);
+                            if (currentUserInformation != null)
+                            {
+                                PushNoteRequest request = new PushNoteRequest
+                                {
+                                    Email = currentUserInformation.Email,
+                                    Title = "Gnomish Queuing Device",
+                                    Body = bodymsg
+                                };
+
+                                PushResponse response = client.PushNote(request);
+                            }
+
+                            //Starting message done
+                            ProgHelpers.startingMsgsent = true;
+                        }
+                        else
+                        {
+                            //Elapsed time
+                            DateTime nowtime = DateTime.Now;
+                            TimeSpan span = nowtime.Subtract(ProgHelpers.startingTime);
+
+                            //Sent recently? Send every 5 minutes when under 1000 in queue
+                            TimeSpan sincelastsend = nowtime.Subtract(ProgHelpers.pushTime);
+
+                            if (ProgHelpers.qpositions.Min() < 1000)
+                            {
+                                if (sincelastsend.TotalMinutes > 5)
+                                {
+                                    string bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
+                                    if (currentUserInformation != null)
+                                    {
+                                        PushNoteRequest request = new PushNoteRequest
+                                        {
+                                            Email = currentUserInformation.Email,
+                                            Title = "SOON! Gnomish Queuing Device",
+                                            Body = bodymsg
+                                        };
+
+                                        PushResponse response = client.PushNote(request);
+
+                                        //Update Pushtime
+                                        ProgHelpers.pushTime = DateTime.Now;
+
+                                        return true;
+                                    }
                                     return true;
                                 }
                                 return true;
                             }
-                            return true;
                         }
 
+                        
                     }
                     else
                     {

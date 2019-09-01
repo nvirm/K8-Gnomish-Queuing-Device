@@ -52,6 +52,7 @@ namespace Gnomish_queuing_device
                 ProgHelpers.startingTime = DateTime.Now;
                 ProgHelpers.startingMsgsent = false;
                 ProgHelpers.startingPosition = 99999;
+                ProgHelpers.pushTime = new DateTime(2005, 7, 15, 3, 15, 0); //Defaulttime, way back :)...
                 txt_currPosi.Text = "Position / Starting position / Elapsed time";
 
 
