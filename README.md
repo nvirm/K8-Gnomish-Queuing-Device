@@ -20,3 +20,9 @@ In addition, it tracks the total time you have spent in queue (while running), a
 # PLEASE NOTE!
 Your World of Warcraft must be running in either Maximized Windowed or Windowed mode, since this application has to be on top of the game.
 Also, I take no responsibility of you using this tool. It is not an forbidden tool type as far as I know, since it does not interfere or modify anything, it merely observes text on a screenshot and sends a message if it matches a rule.
+
+
+# Powered by
+- Tesseract OCR 3.0.2 (https://www.nuget.org/packages/Tesseract/3.0.2)
+- PushBulletSharp (https://www.nuget.org/packages/PushBulletSharp/)
+- WinForms, .NET Framework 4.7
