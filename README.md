@@ -15,7 +15,7 @@ WinForms application that takes a screenshot of a screenarea, passes the image t
 - Different error messages
 - You have been disconnected -message
 
-In addition, it tracks the total time you have spent in queue (while running), and keeps track of the original queue place you started in.
+In addition, it tracks the total time you have spent in queue (while activated from "Start GQD"), and keeps track of the original queue place you started in.
 
 # PLEASE NOTE!
 Your World of Warcraft must be running in either Maximized Windowed or Windowed mode, since this application has to be on top of the game.
