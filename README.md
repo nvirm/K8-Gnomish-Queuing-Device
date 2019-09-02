@@ -3,8 +3,8 @@
 
 # How to use?
 1. Get your Pushbullet API key from https://www.pushbullet.com/#settings (create access token).
-2. Place the access token to appsettings.json file inside Release folder.
-3. Open the .exe from Compiled Release folder. 
+2. Place the access token to appsettings.json file inside "Compiled" Release folder.
+3. Open the .exe from "Compiled" Release folder. 
 4. Place the open application so that you can see the Queue status on the "window" of the application.
 5. After this, press Start GQD. 
 
