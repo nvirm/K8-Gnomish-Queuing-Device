@@ -1,5 +1,3 @@
-# NOTE: Pushover.net pushing is not yet available (despite described below)
-
 # K8 Gnomish Queuing Device
 ![alt text](https://github.com/kitsun8/K8-Gnomish-Queuing-Device/blob/master/Screenshot/K8GDC.png)
 
@@ -10,19 +8,20 @@ OR
 
 1. Buy Pushover for your mobile device (4.99USD one time fee) and set up an application at https://pushover.net/apps/build
 
-2. Place the access token to appsettings.json file inside "Compiled" Release folder (fill either Pushover or PushBullet, or both), then Select APImode (1 for PushBullet, 2 for Pushover).
+2. Place the access token to appsettings.json file inside "Compiled" Release folder (fill either Pushover or PushBullet, or both), then Select APImode (1 for PushBullet, 2 for Pushover, if you use Pushover, you need to pass user key also).
 3. Open the .exe from "Compiled" Release folder. 
 4. Place the open application so that you can see the Queue status on the "window" of the application.
 5. After this, press Start GQD. 
 
 # What it does
 WinForms application that takes a screenshot of a screenarea, passes the image to Tesseract OCR (Optical character recognition), and sends a Pushbullet message to the user of notable events, such as:
-- Queue status less than 1000 (this message is sent once every 5 minutes when under 1000 players in queue)
+- Status updates of queue every 15 minutes (includes position info and speed info)
+- Queue status less than 1000 (this message is sent once every 3 minutes when under 1000 players in queue)
 - Queue status not found (General error message)
 - Different error messages
 - You have been disconnected -message
 
-In addition, it tracks the total time you have spent in queue (while activated from "Start GQD"), and keeps track of the original queue place you started in.
+In addition, it tracks the total time you have spent in queue (while activated from "Start GQD"), and keeps track of the original queue place you started in, and tracks speed of queue (very simple calculation, no algorithms).
 
 # PLEASE NOTE!
 Your World of Warcraft must be running in either Maximized Windowed or Windowed mode, since this application has to be on top of the game.
