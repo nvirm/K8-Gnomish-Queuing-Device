@@ -5,7 +5,9 @@
 
 # How to use?
 1. Get your Pushbullet API key from https://www.pushbullet.com/#settings (create access token).
-*OR*
+
+OR
+
 1. Buy Pushover for your mobile device (4.99USD one time fee) and set up an application at https://pushover.net/apps/build
 
 2. Place the access token to appsettings.json file inside "Compiled" Release folder (fill either Pushover or PushBullet, or both), then Select APImode (1 for PushBullet, 2 for Pushover).
