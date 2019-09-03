@@ -18,7 +18,7 @@ OR
 # What it does
 WinForms application that takes a screenshot of a screenarea, passes the image to Tesseract OCR (Optical character recognition), and sends a Pushbullet message to the user of notable events, such as:
 - Queue status less than 1000 (this message is sent once every 5 minutes when under 1000 players in queue)
-- Queue status not found
+- Queue status not found (General error message)
 - Different error messages
 - You have been disconnected -message
 
