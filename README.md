@@ -1,9 +1,14 @@
+# NOTE: Pushover.net pushing is not yet available (despite described below)
+
 # K8 Gnomish Queuing Device
 ![alt text](https://github.com/kitsun8/K8-Gnomish-Queuing-Device/blob/master/Screenshot/K8GDC.png)
 
 # How to use?
 1. Get your Pushbullet API key from https://www.pushbullet.com/#settings (create access token).
-2. Place the access token to appsettings.json file inside "Compiled" Release folder.
+*OR*
+1. Buy Pushover for your mobile device (4.99USD one time fee) and set up an application at https://pushover.net/apps/build
+
+2. Place the access token to appsettings.json file inside "Compiled" Release folder (fill either Pushover or PushBullet, or both), then Select APImode (1 for PushBullet, 2 for Pushover).
 3. Open the .exe from "Compiled" Release folder. 
 4. Place the open application so that you can see the Queue status on the "window" of the application.
 5. After this, press Start GQD. 
@@ -22,9 +27,10 @@ Your World of Warcraft must be running in either Maximized Windowed or Windowed 
 Also, I take no responsibility of you using this tool. It is not an forbidden tool type as far as I know, since it does not interfere or modify anything, it merely observes text on a screenshot and sends a message if it matches a rule.
 
 Second, PushBullet API has a 500 API messages / month limit. Currently looking for alternatives.
-
+P
 
 # Powered by
 - Tesseract OCR 3.0.2 (https://www.nuget.org/packages/Tesseract/3.0.2)
 - PushBulletSharp (https://www.nuget.org/packages/PushBulletSharp/)
+- Pushover.NET (https://www.nuget.org/packages/PushoverNET/)
 - WinForms, .NET Framework 4.7
