@@ -16,6 +16,7 @@ using Tesseract;
 using PushbulletSharp;
 using PushbulletSharp.Models.Requests;
 using PushbulletSharp.Models.Responses;
+using PushoverClient;
 using System.Text.RegularExpressions;
 
 namespace Gnomish_queuing_device
@@ -157,126 +158,394 @@ namespace Gnomish_queuing_device
                 }
 
                 //5
-                PushbulletClient client = new PushbulletClient(ProgHelpers.pushApi);
-                var currentUserInformation = client.CurrentUsersInformation();
 
-                //If error, send immediately
-                if (ProgHelpers.pushtype == 2 | ProgHelpers.pushtype == 3)
+                //
+                if(ProgHelpers.pushMode == 1 | ProgHelpers.pushMode == 0)
                 {
-                    string bodymsg = "WARNING! Unexpected error occured! No queue status available!";
+                    //Using Pushbullet, Default
+                    PushbulletClient client = new PushbulletClient(ProgHelpers.pushApi);
+                    var currentUserInformation = client.CurrentUsersInformation();
 
-                    if (ProgHelpers.pushtype == 2)
+                    //If error, send immediately (check warning count towards)
+                    if (ProgHelpers.pushtype == 2 | ProgHelpers.pushtype == 3)
                     {
-                        bodymsg = "WARNING! You have been disconnected from the queue!!!";
-                    }
-                    else
-                    {
-                        bodymsg = "WARNING! Unexpected error occured! No queue status available!";
-                    }
+                        string bodymsg = "WARNING! Unexpected error occured! No queue status available!";
 
-                    if (currentUserInformation != null)
-                    {
-                        PushNoteRequest request = new PushNoteRequest
+                        if (ProgHelpers.pushtype == 2)
                         {
-                            Email = currentUserInformation.Email,
-                            Title = "WARN! Gnomish Queuing Device",
-                            Body = bodymsg
-                        };
-
-                        PushResponse response = client.PushNote(request);
-
-                        return false;
-                    }
-                }
-                else
-                {
-                    if (ProgHelpers.qpositions.Count > 0)
-                    {
-                        if (ProgHelpers.startingMsgsent == false)
-                        {
-                            string bodymsg = "Queue Watcher started, no position information yet.";
-
-                            if (currentUserInformation != null)
-                            {
-                                PushNoteRequest request = new PushNoteRequest
-                                {
-                                    Email = currentUserInformation.Email,
-                                    Title = "Gnomish Queuing Device",
-                                    Body = bodymsg
-                                };
-
-                                PushResponse response = client.PushNote(request);
-                            }
-
-                            //Starting message done
-                            ProgHelpers.startingMsgsent = true;
+                            bodymsg = "WARNING! You have been disconnected from the queue!!!";
                         }
                         else
                         {
-                            //Elapsed time
-                            DateTime nowtime = DateTime.Now;
-                            TimeSpan span = nowtime.Subtract(ProgHelpers.startingTime);
+                            bodymsg = "WARNING! Unexpected error occured! No queue status available!";
+                        }
 
-                            //Sent recently? Send every 5 minutes when under 1000 in queue
-                            TimeSpan sincelastsend = nowtime.Subtract(ProgHelpers.pushTime);
+                        if (ProgHelpers.errorCount >= ProgHelpers.concurErrors)
+                        {
+                            //More than threshhold -> Run
 
-                            if (ProgHelpers.qpositions.Min() < 1000)
+                            if (ProgHelpers.concurErrors < ProgHelpers.maxErrors)
                             {
-                                if (sincelastsend.TotalMinutes > 5)
+                                //Send only a limited amount of errors 
+                                if (currentUserInformation != null)
                                 {
-                                    string bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
-                                    if (currentUserInformation != null)
+                                    PushNoteRequest request = new PushNoteRequest
                                     {
-                                        PushNoteRequest request = new PushNoteRequest
+                                        Email = currentUserInformation.Email,
+                                        Title = "WARN! Gnomish Queuing Device",
+                                        Body = bodymsg
+                                    };
+
+                                    PushbulletSharp.Models.Responses.PushResponse response = client.PushNote(request);
+
+                                    return false;
+                                }
+                            }
+                            
+                        }
+                        else
+                        {
+                            //Add errorcount
+                            ProgHelpers.errorCount++;
+                        }
+
+                    }
+                    else
+                    {
+                        //Normal message
+
+                        if (ProgHelpers.qpositions.Count > 0)
+                        {
+                            if (ProgHelpers.startingMsgsent == false)
+                            {
+                                string bodymsg = "Queue Watcher started, no position information yet.";
+
+                                if (currentUserInformation != null)
+                                {
+                                    PushNoteRequest request = new PushNoteRequest
+                                    {
+                                        Email = currentUserInformation.Email,
+                                        Title = "Gnomish Queuing Device",
+                                        Body = bodymsg
+                                    };
+
+                                    PushbulletSharp.Models.Responses.PushResponse response = client.PushNote(request);
+                                }
+
+                                //Starting message done
+                                ProgHelpers.startingMsgsent = true;
+                            }
+                            else
+                            {
+                                //Elapsed time
+                                DateTime nowtime = DateTime.Now;
+                                TimeSpan span = nowtime.Subtract(ProgHelpers.startingTime);
+
+                                //Sent recently? Send every 3 minutes when under 1000 in queue
+                                TimeSpan sincelastsend = nowtime.Subtract(ProgHelpers.pushTime);
+
+                                if (ProgHelpers.qpositions.Min() < 1000)
+                                {
+                                    if (sincelastsend.TotalMinutes > 3)
+                                    {
+                                        var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
+                                        double passed = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                                        double speed = passed / hours;
+
+                                        string bodymsg = "";
+
+                                        if (ProgHelpers.qpositions.Count < 3)
                                         {
-                                            Email = currentUserInformation.Email,
-                                            Title = "SOON! Gnomish Queuing Device",
-                                            Body = bodymsg
-                                        };
+                                            //Too little data to measure speed
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
+                                        }
+                                        else
+                                        {
+                                            //Give speed info
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                        }
 
-                                        PushResponse response = client.PushNote(request);
+                                        
+                                        if (currentUserInformation != null)
+                                        {
+                                            PushNoteRequest request = new PushNoteRequest
+                                            {
+                                                Email = currentUserInformation.Email,
+                                                Title = "SOON! Gnomish Queuing Device",
+                                                Body = bodymsg
+                                            };
 
-                                        //Update Pushtime
-                                        ProgHelpers.pushTime = DateTime.Now;
+                                            PushbulletSharp.Models.Responses.PushResponse response = client.PushNote(request);
 
+                                            //Update Pushtime
+                                            ProgHelpers.pushTime = DateTime.Now;
+
+                                            return true;
+                                        }
                                         return true;
                                     }
                                     return true;
                                 }
-                                return true;
+                                else
+                                {
+                                    //Send status update every 15 mins
+                                    if (sincelastsend.TotalMinutes > 15)
+                                    {
+                                        var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
+                                        double passed = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                                        double speed = passed / hours;
+
+                                        string bodymsg = "";
+
+                                        if (ProgHelpers.qpositions.Count < 3)
+                                        {
+                                            //Too little data to measure speed
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
+                                        }
+                                        else
+                                        {
+                                            //Give speed info
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                        }
+
+                                        if (currentUserInformation != null)
+                                        {
+                                            PushNoteRequest request = new PushNoteRequest
+                                            {
+                                                Email = currentUserInformation.Email,
+                                                Title = "Gnomish Queuing Device",
+                                                Body = bodymsg
+                                            };
+
+                                            PushbulletSharp.Models.Responses.PushResponse response = client.PushNote(request);
+
+                                            //Update Pushtime
+                                            ProgHelpers.pushTime = DateTime.Now;
+                                            ProgHelpers.errorCount = 0; //Reset errors
+
+                                            return true;
+
+                                        }
+                                        return true;
+                                    }
+                                }
                             }
+
+
+                        }
+                        else
+                        {
+
+                            if (ProgHelpers.startingMsgsent == false)
+                            {
+                                string bodymsg = "Queue Watcher started, no position information yet.";
+
+                                if (currentUserInformation != null)
+                                {
+                                    PushNoteRequest request = new PushNoteRequest
+                                    {
+                                        Email = currentUserInformation.Email,
+                                        Title = "Gnomish Queuing Device",
+                                        Body = bodymsg
+                                    };
+
+                                    PushbulletSharp.Models.Responses.PushResponse response = client.PushNote(request);
+                                }
+
+                                //Starting message done
+                                ProgHelpers.startingMsgsent = true;
+                            }
+
                         }
 
-                        
+                        mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Refresh complete.");
+                        return true;
+                    }
+                }
+                if(ProgHelpers.pushMode == 2)
+                {
+                    //Using Pushover
+                    Pushover pclient = new Pushover(ProgHelpers.pushApi);
+                   
+                    //If error, send immediately (check warning count towards)
+                    if (ProgHelpers.pushtype == 2 | ProgHelpers.pushtype == 3)
+                    {
+                        string bodymsg = "WARNING! Unexpected error occured! No queue status available!";
+
+                        if (ProgHelpers.pushtype == 2)
+                        {
+                            bodymsg = "WARNING! You have been disconnected from the queue!!!";
+                        }
+                        else
+                        {
+                            bodymsg = "WARNING! Unexpected error occured! No queue status available!";
+                        }
+
+                        if (ProgHelpers.errorCount >= ProgHelpers.concurErrors)
+                        {
+                            if (ProgHelpers.concurErrors < ProgHelpers.maxErrors)
+                            {
+                                PushoverClient.PushResponse response = pclient.Push(
+                                 "WARN! Gnomish Queuing Device",
+                                 bodymsg,
+                                 ProgHelpers.pushoverTargetkey
+                             );
+                                //Send only a limited amount of errors 
+                            }
+                            return false;
+                        }
+                        else
+                        {
+                            //Add errorcount
+                            ProgHelpers.errorCount++;
+                        }
+
                     }
                     else
                     {
+                        //Normal message
 
-                        if (ProgHelpers.startingMsgsent == false)
+                        if (ProgHelpers.qpositions.Count > 0)
                         {
-                            string bodymsg = "Queue Watcher started, no position information yet.";
-
-                            if (currentUserInformation != null)
+                            if (ProgHelpers.startingMsgsent == false)
                             {
-                                PushNoteRequest request = new PushNoteRequest
-                                {
-                                    Email = currentUserInformation.Email,
-                                    Title = "Gnomish Queuing Device",
-                                    Body = bodymsg
-                                };
+                                string bodymsg = "Queue Watcher started, no position information yet.";
 
-                                PushResponse response = client.PushNote(request);
+                                    PushoverClient.PushResponse response = pclient.Push(
+                                     "Gnomish Queuing Device",
+                                     bodymsg,
+                                     ProgHelpers.pushoverTargetkey
+                                 );
+
+                                //Starting message done
+                                ProgHelpers.startingMsgsent = true;
+                                ProgHelpers.errorCount = 0; //Reset errors
+
+                                return true;
+                            }
+                            else
+                            {
+                                //Elapsed time
+                                DateTime nowtime = DateTime.Now;
+                                TimeSpan span = nowtime.Subtract(ProgHelpers.startingTime);
+
+                                //Sent recently? Send every 3 minutes when under 1000 in queue
+                                TimeSpan sincelastsend = nowtime.Subtract(ProgHelpers.pushTime);
+
+                                if (ProgHelpers.qpositions.Min() < 1000)
+                                {
+                                    if (sincelastsend.TotalMinutes > 3)
+                                    {
+                                        var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
+                                        double passed = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                                        double speed = passed / hours;
+
+                                        string bodymsg = "";
+
+                                        if (ProgHelpers.qpositions.Count < 3)
+                                        {
+                                            //Too little data to measure speed
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
+                                        }
+                                        else
+                                        {
+                                            //Give speed info
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                        }
+
+
+                                        PushoverClient.PushResponse response = pclient.Push(
+                                              "SOON! Gnomish Queuing Device",
+                                              bodymsg,
+                                              ProgHelpers.pushoverTargetkey
+                                          );
+
+                                            //Update Pushtime
+                                            ProgHelpers.pushTime = DateTime.Now;
+                                            //Reset errors
+                                            ProgHelpers.errorCount = 0; 
+
+
+                                        return true;
+
+                                    }
+                                    return true;
+                                }
+                                else
+                                {
+                                    //Send status update every 15 mins
+                                    if (sincelastsend.TotalMinutes > 15)
+                                        {
+                                        var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
+                                        double passed = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                                        double speed = passed / hours;
+
+                                        string bodymsg = "";
+
+                                        if(ProgHelpers.qpositions.Count < 3)
+                                        {
+                                            //Too little data to measure speed
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
+                                        }
+                                        else
+                                        {
+                                            //Give speed info
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                        }
+                                        
+
+
+                                        PushoverClient.PushResponse response = pclient.Push(
+                                                  "Gnomish Queuing Device",
+                                                  bodymsg,
+                                                  ProgHelpers.pushoverTargetkey
+                                              );
+
+                                            //Update Pushtime
+                                            ProgHelpers.pushTime = DateTime.Now;
+                                            //Reset errors
+                                            ProgHelpers.errorCount = 0;
+
+                                            return true;
+
+                                        }
+                                        return true;
+                                }
+
                             }
 
-                            //Starting message done
-                            ProgHelpers.startingMsgsent = true;
+
+                        }
+                        else
+                        {
+
+                            if (ProgHelpers.startingMsgsent == false)
+                            {
+                                string bodymsg = "Queue Watcher started, no position information yet.";
+
+                                PushoverClient.PushResponse response = pclient.Push(
+                                     "Gnomish Queuing Device",
+                                     bodymsg,
+                                     ProgHelpers.pushoverTargetkey
+                                 );
+
+                                //Starting message done
+                                ProgHelpers.startingMsgsent = true;
+
+                                ProgHelpers.errorCount = 0; //Reset errors
+                            }
+
                         }
 
+                        mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Refresh complete.");
+                        return true;
                     }
 
-                    mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Refresh complete.");
-                    return true;
+
                 }
+               
+
+                
 
                 
             }

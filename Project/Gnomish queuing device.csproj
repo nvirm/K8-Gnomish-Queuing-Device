@@ -86,6 +86,12 @@
     <Reference Include="PushbulletSharp, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PushBulletSharp.3.1.0\lib\portable-windows8+net45\PushbulletSharp.dll</HintPath>
     </Reference>
+    <Reference Include="PushoverClient, Version=1.0.7018.26922, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PushoverNET.1.0.25\lib\net472\PushoverClient.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
+      <HintPath>..\packages\ServiceStack.Text.5.0.2\lib\net45\ServiceStack.Text.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
