@@ -36,6 +36,7 @@
             this.txt_currPosi = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txt_loglabel = new System.Windows.Forms.Label();
+            this.txt_speed = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.resultBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -98,12 +99,23 @@
             this.txt_loglabel.TabIndex = 10;
             this.txt_loglabel.Text = "This will show a log message when one is created.";
             // 
+            // txt_speed
+            // 
+            this.txt_speed.AutoSize = true;
+            this.txt_speed.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.txt_speed.Location = new System.Drawing.Point(9, 330);
+            this.txt_speed.Name = "txt_speed";
+            this.txt_speed.Size = new System.Drawing.Size(41, 13);
+            this.txt_speed.TabIndex = 11;
+            this.txt_speed.Text = "Speed:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(659, 375);
+            this.Controls.Add(this.txt_speed);
             this.Controls.Add(this.txt_loglabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txt_currPosi);
@@ -130,5 +142,6 @@
         public System.Windows.Forms.Label txt_currPosi;
         public System.Windows.Forms.PictureBox resultBox;
         public System.Windows.Forms.Label label1;
+        public System.Windows.Forms.Label txt_speed;
     }
 }

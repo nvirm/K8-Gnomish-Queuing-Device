@@ -73,6 +73,7 @@ namespace Gnomish_queuing_device
                 mainForm.txt_currPosi.Visible = false;
                 mainForm.txt_loglabel.Visible = false;
                 mainForm.label1.Visible = false;
+                mainForm.txt_speed.Visible = false;
                 mainForm.Text = "";
 
                 //1
@@ -115,6 +116,7 @@ namespace Gnomish_queuing_device
                 mainForm.txt_currPosi.Visible = true;
                 mainForm.txt_loglabel.Visible = true;
                 mainForm.label1.Visible = true;
+                mainForm.txt_speed.Visible = true;
                 mainForm.Text = "K8 Gnomish Queuing Device";
 
                 //4a - Assign relevant data
@@ -142,6 +144,13 @@ namespace Gnomish_queuing_device
                         TimeSpan span = nowtime.Subtract(ProgHelpers.startingTime);
 
                         mainForm.txt_currPosi.Text = ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.startingPosition.ToString() + " / " + span.Hours + " H " + span.Minutes + " M " + span.Seconds + " S";
+
+                        //Update speed to form
+                        var hoursform = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
+                        double passedform = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                        double speedform = passedform / hoursform;
+                        mainForm.txt_speed.Text = "Speed: " + (int)speedform + " / Hour";
+
                     }
 
                 }
@@ -263,6 +272,7 @@ namespace Gnomish_queuing_device
                                         {
                                             //Give speed info
                                             bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                           
                                         }
 
                                         
@@ -306,6 +316,7 @@ namespace Gnomish_queuing_device
                                         {
                                             //Give speed info
                                             bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                            
                                         }
 
                                         if (currentUserInformation != null)
@@ -451,6 +462,7 @@ namespace Gnomish_queuing_device
                                         {
                                             //Give speed info
                                             bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                            
                                         }
 
 
@@ -491,6 +503,7 @@ namespace Gnomish_queuing_device
                                         {
                                             //Give speed info
                                             bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                           
                                         }
                                         
 
@@ -536,6 +549,12 @@ namespace Gnomish_queuing_device
                             }
 
                         }
+
+                        //Update speed to form
+                        var hoursform = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
+                        double passedform = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                        double speedform = passedform / hoursform;
+                        mainForm.txt_speed.Text = "Speed: " + (int)speedform + " / Hour";
 
                         mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Refresh complete.");
                         return true;

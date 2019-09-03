@@ -54,6 +54,7 @@ namespace Gnomish_queuing_device
                 ProgHelpers.startingPosition = 99999;
                 ProgHelpers.pushTime = new DateTime(2005, 7, 15, 3, 15, 0); //Defaulttime, way back :)...
                 txt_currPosi.Text = "Position / Starting position / Elapsed time";
+                txt_speed.Text = "Speed";
 
 
 
