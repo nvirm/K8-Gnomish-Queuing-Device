@@ -14,12 +14,12 @@ OR
 5. After this, press Start GQD. 
 
 # What it does
-WinForms application that takes a screenshot of a screenarea, passes the image to Tesseract OCR (Optical character recognition), and sends a Pushbullet message to the user of notable events, such as:
+WinForms application that takes a screenshot of a screenarea, passes the image to Tesseract OCR (Optical character recognition), and sends a Push message to the user of notable events, such as:
 - Status updates of queue every 15 minutes (includes position info and speed info)
 - Queue status less than 1000 (this message is sent once every 3 minutes when under 1000 players in queue)
-- Queue status not found (General error message)
-- Different error messages
-- You have been disconnected -message
+- Queue status not found (General error message, maximum spam of 3 messages in a row, then only after a successful scan)
+- Different error messages (maximum spam of 3 messages in a row, then only after a successful scan)
+- You have been disconnected -message (maximum spam of 3 messages in a row, then only after a successful scan)
 
 In addition, it tracks the total time you have spent in queue (while activated from "Start GQD"), and keeps track of the original queue place you started in, and tracks speed of queue (very simple calculation, no algorithms).
 
