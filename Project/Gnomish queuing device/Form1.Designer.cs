@@ -46,9 +46,9 @@
             this.btn_autoRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_autoRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_autoRefresh.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btn_autoRefresh.Location = new System.Drawing.Point(524, 338);
+            this.btn_autoRefresh.Location = new System.Drawing.Point(577, 269);
             this.btn_autoRefresh.Name = "btn_autoRefresh";
-            this.btn_autoRefresh.Size = new System.Drawing.Size(123, 31);
+            this.btn_autoRefresh.Size = new System.Drawing.Size(78, 31);
             this.btn_autoRefresh.TabIndex = 1;
             this.btn_autoRefresh.Text = "Start GQD";
             this.btn_autoRefresh.UseVisualStyleBackColor = false;
@@ -63,9 +63,9 @@
             // 
             this.resultBox.BackColor = System.Drawing.Color.Lime;
             this.resultBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.resultBox.Location = new System.Drawing.Point(12, 12);
+            this.resultBox.Location = new System.Drawing.Point(-1, 0);
             this.resultBox.Name = "resultBox";
-            this.resultBox.Size = new System.Drawing.Size(635, 277);
+            this.resultBox.Size = new System.Drawing.Size(671, 247);
             this.resultBox.TabIndex = 7;
             this.resultBox.TabStop = false;
             // 
@@ -73,7 +73,7 @@
             // 
             this.txt_currPosi.AutoSize = true;
             this.txt_currPosi.ForeColor = System.Drawing.SystemColors.Control;
-            this.txt_currPosi.Location = new System.Drawing.Point(9, 343);
+            this.txt_currPosi.Location = new System.Drawing.Point(8, 274);
             this.txt_currPosi.Name = "txt_currPosi";
             this.txt_currPosi.Size = new System.Drawing.Size(201, 13);
             this.txt_currPosi.TabIndex = 8;
@@ -83,7 +83,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.Location = new System.Drawing.Point(9, 356);
+            this.label1.Location = new System.Drawing.Point(8, 287);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(32, 13);
             this.label1.TabIndex = 9;
@@ -93,7 +93,7 @@
             // 
             this.txt_loglabel.AutoSize = true;
             this.txt_loglabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.txt_loglabel.Location = new System.Drawing.Point(47, 356);
+            this.txt_loglabel.Location = new System.Drawing.Point(46, 287);
             this.txt_loglabel.Name = "txt_loglabel";
             this.txt_loglabel.Size = new System.Drawing.Size(245, 13);
             this.txt_loglabel.TabIndex = 10;
@@ -103,7 +103,7 @@
             // 
             this.txt_speed.AutoSize = true;
             this.txt_speed.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.txt_speed.Location = new System.Drawing.Point(9, 330);
+            this.txt_speed.Location = new System.Drawing.Point(8, 261);
             this.txt_speed.Name = "txt_speed";
             this.txt_speed.Size = new System.Drawing.Size(41, 13);
             this.txt_speed.TabIndex = 11;
@@ -114,7 +114,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(659, 375);
+            this.ClientSize = new System.Drawing.Size(667, 308);
             this.Controls.Add(this.txt_speed);
             this.Controls.Add(this.txt_loglabel);
             this.Controls.Add(this.label1);

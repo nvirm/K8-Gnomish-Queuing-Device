@@ -18,6 +18,7 @@ using PushbulletSharp.Models.Requests;
 using PushbulletSharp.Models.Responses;
 using PushoverClient;
 using System.Text.RegularExpressions;
+using ImageMagick;
 
 namespace Gnomish_queuing_device
 {
@@ -75,11 +76,13 @@ namespace Gnomish_queuing_device
                 mainForm.label1.Visible = false;
                 mainForm.txt_speed.Visible = false;
                 mainForm.Text = "";
-
+                
                 //1
                 Point bounds = new Point(mainForm.Bounds.Top, mainForm.Bounds.Left);
                 Rectangle canvasBounds = Screen.GetBounds(bounds);
                 Graphics graphics;
+
+
                 using (Image image = new Bitmap(mainForm.Width, mainForm.Height))
                 {
 
@@ -99,15 +102,32 @@ namespace Gnomish_queuing_device
                     //graphics.Dispose(); --keep incase things break
                 }
 
+
+                //2 Manipulate image a bit with MagickImage
+
+                // Read from file
+                using (MagickImage image = new MagickImage(Application.StartupPath+"\\ocr.png"))
+                {
+                    Percentage percentage = new Percentage(50);
+
+                    image.Threshold(percentage); // 50 is OK, range from 45-60 with various results. TODO: Finetuning. 
+                    image.Depth = 1;
+                    image.Write(Application.StartupPath+"\\ocrMagick.png");
+
+                }
+
                 //3
-                var ocrimage = new Bitmap(Application.StartupPath + "\\ocr.png");
+                var ocrimage = new Bitmap(Application.StartupPath + "\\ocrMagick.png");
                 var ocr = new TesseractEngine(Application.StartupPath + "TessData", "eng");
 
                 //4
                 string stringresult = ocr.Process(ocrimage).GetText();
+               
+
+
                 string positiontxt = "";
                 int position = 9999;
-
+        
 
                 ocrimage.Dispose();
 
@@ -129,6 +149,13 @@ namespace Gnomish_queuing_device
                     ProgHelpers.pushtype = 1;
 
                     positiontxt = getBetween(stringresult, "queue:", "\n");
+
+                    //Additional step, replace l and | as 1 (common OCR mistake)
+                    //Add more obvious OCR common errors as we go
+                    positiontxt = positiontxt.Replace("l", "1");
+                    positiontxt = positiontxt.Replace("|", "1");
+                    positiontxt = positiontxt.ToUpper().Replace("O", "0");
+
                     positiontxt = Regex.Replace(positiontxt, "[^0-9]", "");
                      
                     if (Int32.TryParse(positiontxt, out position))
