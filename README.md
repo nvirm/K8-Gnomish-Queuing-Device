@@ -34,7 +34,8 @@ Pushover.net has a 7500 API messages / month limit / application, you can create
 
 
 # Powered by
-- Tesseract OCR 3.0.2 (https://www.nuget.org/packages/Tesseract/3.0.2)
+- Tesseract OCR 3.3.0 (https://www.nuget.org/packages/Tesseract/)
 - PushBulletSharp (https://www.nuget.org/packages/PushBulletSharp/)
 - Pushover.NET (https://www.nuget.org/packages/PushoverNET/)
+- ImageMagick.NET (https://www.nuget.org/packages/Magick.NET-Q16-AnyCPU)
 - WinForms, .NET Framework 4.7
