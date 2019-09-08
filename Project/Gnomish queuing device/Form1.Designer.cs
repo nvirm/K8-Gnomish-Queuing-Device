@@ -37,6 +37,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txt_loglabel = new System.Windows.Forms.Label();
             this.txt_speed = new System.Windows.Forms.Label();
+            this.txt_etrlabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.resultBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -83,7 +84,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.Location = new System.Drawing.Point(8, 287);
+            this.label1.Location = new System.Drawing.Point(8, 308);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(32, 13);
             this.label1.TabIndex = 9;
@@ -93,7 +94,7 @@
             // 
             this.txt_loglabel.AutoSize = true;
             this.txt_loglabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.txt_loglabel.Location = new System.Drawing.Point(46, 287);
+            this.txt_loglabel.Location = new System.Drawing.Point(46, 308);
             this.txt_loglabel.Name = "txt_loglabel";
             this.txt_loglabel.Size = new System.Drawing.Size(245, 13);
             this.txt_loglabel.TabIndex = 10;
@@ -109,12 +110,23 @@
             this.txt_speed.TabIndex = 11;
             this.txt_speed.Text = "Speed:";
             // 
+            // txt_etrlabel
+            // 
+            this.txt_etrlabel.AutoSize = true;
+            this.txt_etrlabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.txt_etrlabel.Location = new System.Drawing.Point(8, 287);
+            this.txt_etrlabel.Name = "txt_etrlabel";
+            this.txt_etrlabel.Size = new System.Drawing.Size(29, 13);
+            this.txt_etrlabel.TabIndex = 12;
+            this.txt_etrlabel.Text = "ETR";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(667, 308);
+            this.ClientSize = new System.Drawing.Size(667, 330);
+            this.Controls.Add(this.txt_etrlabel);
             this.Controls.Add(this.txt_speed);
             this.Controls.Add(this.txt_loglabel);
             this.Controls.Add(this.label1);
@@ -143,5 +155,6 @@
         public System.Windows.Forms.PictureBox resultBox;
         public System.Windows.Forms.Label label1;
         public System.Windows.Forms.Label txt_speed;
+        public System.Windows.Forms.Label txt_etrlabel;
     }
 }

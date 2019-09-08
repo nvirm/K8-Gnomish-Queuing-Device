@@ -19,6 +19,7 @@ using PushbulletSharp.Models.Responses;
 using PushoverClient;
 using System.Text.RegularExpressions;
 using ImageMagick;
+using Progression.Extras;
 
 namespace Gnomish_queuing_device
 {
@@ -39,6 +40,7 @@ namespace Gnomish_queuing_device
                 return "";
             }
         }
+
 
         public async Task<bool> UpdateRound()
         {
@@ -75,6 +77,7 @@ namespace Gnomish_queuing_device
                 mainForm.txt_loglabel.Visible = false;
                 mainForm.label1.Visible = false;
                 mainForm.txt_speed.Visible = false;
+                mainForm.txt_etrlabel.Visible = false;
                 mainForm.Text = "";
                 
                 //1
@@ -137,6 +140,7 @@ namespace Gnomish_queuing_device
                 mainForm.txt_loglabel.Visible = true;
                 mainForm.label1.Visible = true;
                 mainForm.txt_speed.Visible = true;
+                mainForm.txt_etrlabel.Visible = true;
                 mainForm.Text = "K8 Gnomish Queuing Device";
 
                 //4a - Assign relevant data
@@ -165,6 +169,41 @@ namespace Gnomish_queuing_device
                             ProgHelpers.startingPosition = position;
                         }
                         ProgHelpers.qpositions.Add(position);
+
+                        /*
+                         * UNDER CONSTRUCTION ZONE: ETA CALCULATOR PART
+                         */
+
+                        //Progress
+                        if (ProgHelpers.qpositions.Count > 3)
+                        {
+                            decimal progressed = Convert.ToDecimal(ProgHelpers.qpositions.Max()) - Convert.ToDecimal(ProgHelpers.qpositions.Min());
+                            decimal progStatus = progressed / Convert.ToDecimal(ProgHelpers.qpositions.Max());
+
+                            //double progStatus = Convert.ToDouble(ProgHelpers.qpositions.Min()) / Convert.ToDouble(ProgHelpers.qpositions.Max()) * 100;
+                            float etaUp = (float)progStatus;
+
+
+                            /*
+                             * THIS PART IS UNDER CONSTRUCTION
+                             */
+                            //Add to ETACalc
+                            ProgHelpers.etaCalc.Update(etaUp);
+                            //Update ETA if possible
+                            bool etaAvail = ProgHelpers.etaCalc.ETAIsAvailable;
+                            if (etaAvail == true)
+                            {
+                                //ETA Available, get time Remaining and time of arrival
+                                
+                                int hours = (int)ProgHelpers.etaCalc.ETR.TotalHours;
+                                int minutes = (int)ProgHelpers.etaCalc.ETR.TotalMinutes;
+                                ProgHelpers.etaString = "Estimated time remaining: " + hours + " Hours, " + minutes + " Minutes.";
+                                mainForm.txt_etrlabel.Text = ProgHelpers.etaString;
+                            }
+                        }
+                        /*
+                         * UNDER CONSTRUCTION ZONE ENDS
+                         */
 
                         //Update label
                         DateTime nowtime = DateTime.Now;
@@ -290,7 +329,7 @@ namespace Gnomish_queuing_device
 
                                         string bodymsg = "";
 
-                                        if (ProgHelpers.qpositions.Count < 3)
+                                        if (ProgHelpers.qpositions.Count < 5)
                                         {
                                             //Too little data to measure speed
                                             bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
@@ -298,7 +337,7 @@ namespace Gnomish_queuing_device
                                         else
                                         {
                                             //Give speed info
-                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour. | " + ProgHelpers.etaString;
                                            
                                         }
 
@@ -480,7 +519,7 @@ namespace Gnomish_queuing_device
 
                                         string bodymsg = "";
 
-                                        if (ProgHelpers.qpositions.Count < 3)
+                                        if (ProgHelpers.qpositions.Count < 5)
                                         {
                                             //Too little data to measure speed
                                             bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
@@ -488,7 +527,7 @@ namespace Gnomish_queuing_device
                                         else
                                         {
                                             //Give speed info
-                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour. | "+ ProgHelpers.etaString;
                                             
                                         }
 

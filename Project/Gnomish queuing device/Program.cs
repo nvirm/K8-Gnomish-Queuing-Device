@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text;
+using Progression.Extras;
 
 namespace Gnomish_queuing_device
 {
@@ -40,7 +41,10 @@ namespace Gnomish_queuing_device
         public static int errorCount = 0;
         public static int maxErrors = 3;
 
-       
+        //Enable ETA component and text status for the remaining times.
+        public static ETACalculator etaCalc = new ETACalculator(3, 900);
+        public static string etaString = ""; 
+
 
     }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Progression.Extras;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -53,8 +54,13 @@ namespace Gnomish_queuing_device
                 ProgHelpers.startingMsgsent = false;
                 ProgHelpers.startingPosition = 99999;
                 ProgHelpers.pushTime = new DateTime(2005, 7, 15, 3, 15, 0); //Defaulttime, way back :)...
+                ProgHelpers.etaString = "";
                 txt_currPosi.Text = "Position / Starting position / Elapsed time";
                 txt_speed.Text = "Speed";
+                txt_etrlabel.Text = "ETR";
+
+                //Reset ETACalc
+                ProgHelpers.etaCalc.Reset();
 
 
 
