@@ -38,4 +38,5 @@ Pushover.net has a 7500 API messages / month limit / application, you can create
 - PushBulletSharp (https://www.nuget.org/packages/PushBulletSharp/)
 - Pushover.NET (https://www.nuget.org/packages/PushoverNET/)
 - ImageMagick.NET (https://www.nuget.org/packages/Magick.NET-Q16-AnyCPU)
+- ETACalculator (https://github.com/scottrippey/Progression/blob/master/Progression/Extras/ETACalculator.cs)
 - WinForms, .NET Framework 4.7
