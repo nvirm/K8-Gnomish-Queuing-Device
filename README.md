@@ -23,6 +23,8 @@ WinForms application that takes a screenshot of a screenarea, passes the image t
 
 In addition, it tracks the total time you have spent in queue (while activated from "Start GQD"), and keeps track of the original queue place you started in, and tracks speed of queue (very simple calculation, no algorithms).
 
+Also, as per 1.1 release, includes Estimated Time Remaining -calculations.
+
 # PLEASE NOTE!
 Your World of Warcraft must be running in either Maximized Windowed or Windowed mode, since this application has to be on top of the game.
 
