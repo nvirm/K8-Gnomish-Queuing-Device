@@ -29,7 +29,13 @@ namespace Gnomish_queuing_device
         public static int startingPosition = 99999; //Ignore this value, default value that will be overridden when Activate button is pressed.
         public static DateTime startingTime = DateTime.Now; // Startingtime of the application, will be overridden when Activate button is pressed.
         
+
+        //1.00 version queue data
         public static List<int> qpositions = new List<int>();
+
+        //1.11 version, store data datetimes, to always compare to latest data, not smallest
+        public static List<DateTime> qtimes = new List<DateTime>();
+
 
         public static bool startingMsgsent = false;
 
@@ -43,8 +49,11 @@ namespace Gnomish_queuing_device
 
         //Enable ETA component and text status for the remaining times.
         public static ETACalculator etaCalc = new ETACalculator(3, 900);
-        public static string etaString = ""; 
+        public static string etaString = "";
 
+
+        //Threshold for the OCR scan
+        public static int threshold = 45;
 
     }
 

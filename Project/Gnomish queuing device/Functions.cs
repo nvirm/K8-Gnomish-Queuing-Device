@@ -111,7 +111,7 @@ namespace Gnomish_queuing_device
                 // Read from file
                 using (MagickImage image = new MagickImage(Application.StartupPath+"\\ocr.png"))
                 {
-                    Percentage percentage = new Percentage(50);
+                    Percentage percentage = new Percentage(ProgHelpers.threshold);
 
                     image.Threshold(percentage); // 50 is OK, range from 45-60 with various results. TODO: Finetuning. 
                     image.Depth = 1;
@@ -129,7 +129,7 @@ namespace Gnomish_queuing_device
 
 
                 string positiontxt = "";
-                int position = 9999;
+                int position = 99999;
         
 
                 ocrimage.Dispose();
@@ -167,26 +167,41 @@ namespace Gnomish_queuing_device
                         if (ProgHelpers.startingPosition == 99999)
                         {
                             ProgHelpers.startingPosition = position;
+                            ProgHelpers.qpositions.Add(position);
+                            ProgHelpers.qtimes.Add(DateTime.Now);
                         }
-                        ProgHelpers.qpositions.Add(position);
+                        
+                        if (ProgHelpers.startingPosition < position)
+                        {
+                            //Handling for the event that the starting position has been assumed wrongly
+                            //Replace Max position from the List, let the DateTime be (for now at least), it reduces accuracy a bit but it can't be helped
+                            //NOTE: This skips adding to the qpositions list
+                            int indexofStartingPosition = ProgHelpers.qpositions.IndexOf(ProgHelpers.startingPosition);
+                            ProgHelpers.qpositions[indexofStartingPosition] = position;
+                            ProgHelpers.startingPosition = position;
+
+                        }
+                        else
+                        {
+                            ProgHelpers.qpositions.Add(position);
+                            ProgHelpers.qtimes.Add(DateTime.Now);
+                        }
+                       
+
+                        //get index of latest Datetime (we might do some scrutiny later on)
+                        int indexOflatest = ProgHelpers.qtimes.IndexOf(ProgHelpers.qtimes.Max());
 
                         /*
                          * UNDER CONSTRUCTION ZONE: ETA CALCULATOR PART
                          */
-
                         //Progress
                         if (ProgHelpers.qpositions.Count > 3)
                         {
-                            decimal progressed = Convert.ToDecimal(ProgHelpers.qpositions.Max()) - Convert.ToDecimal(ProgHelpers.qpositions.Min());
-                            decimal progStatus = progressed / Convert.ToDecimal(ProgHelpers.qpositions.Max());
+                            decimal progressed = Convert.ToDecimal(ProgHelpers.startingPosition) - Convert.ToDecimal(ProgHelpers.qpositions[indexOflatest]);
+                            decimal progStatus = progressed / Convert.ToDecimal(ProgHelpers.startingPosition);
 
-                            //double progStatus = Convert.ToDouble(ProgHelpers.qpositions.Min()) / Convert.ToDouble(ProgHelpers.qpositions.Max()) * 100;
                             float etaUp = (float)progStatus;
 
-
-                            /*
-                             * THIS PART IS UNDER CONSTRUCTION
-                             */
                             //Add to ETACalc
                             ProgHelpers.etaCalc.Update(etaUp);
                             //Update ETA if possible
@@ -209,11 +224,11 @@ namespace Gnomish_queuing_device
                         DateTime nowtime = DateTime.Now;
                         TimeSpan span = nowtime.Subtract(ProgHelpers.startingTime);
 
-                        mainForm.txt_currPosi.Text = ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.startingPosition.ToString() + " / " + span.Hours + " H " + span.Minutes + " M " + span.Seconds + " S";
+                        mainForm.txt_currPosi.Text = ProgHelpers.qpositions[indexOflatest].ToString() + " / " + ProgHelpers.startingPosition.ToString() + " / " + span.Hours + " H " + span.Minutes + " M " + span.Seconds + " S";
 
                         //Update speed to form
                         var hoursform = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
-                        double passedform = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                        double passedform = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest]);
                         double speedform = passedform / hoursform;
                         mainForm.txt_speed.Text = "Speed: " + (int)speedform + " / Hour";
 
@@ -319,12 +334,14 @@ namespace Gnomish_queuing_device
                                 //Sent recently? Send every 3 minutes when under 1000 in queue
                                 TimeSpan sincelastsend = nowtime.Subtract(ProgHelpers.pushTime);
 
-                                if (ProgHelpers.qpositions.Min() < 1000)
+                                int indexOflatest = ProgHelpers.qtimes.IndexOf(ProgHelpers.qtimes.Max());
+
+                                if (ProgHelpers.qpositions[indexOflatest] < 1000)
                                 {
                                     if (sincelastsend.TotalMinutes > 3)
                                     {
                                         var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
-                                        double passed = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                                        double passed = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest]);
                                         double speed = passed / hours;
 
                                         string bodymsg = "";
@@ -332,12 +349,12 @@ namespace Gnomish_queuing_device
                                         if (ProgHelpers.qpositions.Count < 5)
                                         {
                                             //Too little data to measure speed
-                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions[indexOflatest].ToString() + " / " + ProgHelpers.startingPosition.ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
                                         }
                                         else
                                         {
                                             //Give speed info
-                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour. | " + ProgHelpers.etaString;
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions[indexOflatest].ToString() + " / " + ProgHelpers.startingPosition.ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour. | " + ProgHelpers.etaString;
                                            
                                         }
 
@@ -369,20 +386,20 @@ namespace Gnomish_queuing_device
                                     if (sincelastsend.TotalMinutes > 15)
                                     {
                                         var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
-                                        double passed = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                                        double passed = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest]);
                                         double speed = passed / hours;
 
                                         string bodymsg = "";
 
-                                        if (ProgHelpers.qpositions.Count < 3)
+                                        if (ProgHelpers.qpositions.Count < 5)
                                         {
                                             //Too little data to measure speed
-                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions[indexOflatest].ToString() + " / " + ProgHelpers.startingPosition.ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
                                         }
                                         else
                                         {
                                             //Give speed info
-                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions[indexOflatest].ToString() + " / " + ProgHelpers.startingPosition.ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour. | " + ProgHelpers.etaString;
                                             
                                         }
 
@@ -509,12 +526,14 @@ namespace Gnomish_queuing_device
                                 //Sent recently? Send every 3 minutes when under 1000 in queue
                                 TimeSpan sincelastsend = nowtime.Subtract(ProgHelpers.pushTime);
 
-                                if (ProgHelpers.qpositions.Min() < 1000)
+                                int indexOflatest2 = ProgHelpers.qtimes.IndexOf(ProgHelpers.qtimes.Max());
+
+                                if (ProgHelpers.qpositions[indexOflatest2] < 1000)
                                 {
                                     if (sincelastsend.TotalMinutes > 3)
                                     {
                                         var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
-                                        double passed = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                                        double passed = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest2]);
                                         double speed = passed / hours;
 
                                         string bodymsg = "";
@@ -522,12 +541,12 @@ namespace Gnomish_queuing_device
                                         if (ProgHelpers.qpositions.Count < 5)
                                         {
                                             //Too little data to measure speed
-                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions[indexOflatest2].ToString() + " / " + ProgHelpers.startingPosition.ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
                                         }
                                         else
                                         {
                                             //Give speed info
-                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour. | "+ ProgHelpers.etaString;
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions[indexOflatest2].ToString() + " / " + ProgHelpers.startingPosition.ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour. | "+ ProgHelpers.etaString;
                                             
                                         }
 
@@ -555,20 +574,20 @@ namespace Gnomish_queuing_device
                                     if (sincelastsend.TotalMinutes > 15)
                                         {
                                         var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
-                                        double passed = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                                        double passed = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest2]);
                                         double speed = passed / hours;
 
                                         string bodymsg = "";
 
-                                        if(ProgHelpers.qpositions.Count < 3)
+                                        if(ProgHelpers.qpositions.Count < 5)
                                         {
                                             //Too little data to measure speed
-                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions[indexOflatest2].ToString() + " / " + ProgHelpers.startingPosition.ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.";
                                         }
                                         else
                                         {
                                             //Give speed info
-                                            bodymsg = "Current position: " + ProgHelpers.qpositions.Min().ToString() + " / " + ProgHelpers.qpositions.Max().ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour.";
+                                            bodymsg = "Current position: " + ProgHelpers.qpositions[indexOflatest2].ToString() + " / " + ProgHelpers.startingPosition.ToString() + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes. | Speed: " + (int)speed + " / Hour. | " + ProgHelpers.etaString;
                                            
                                         }
                                         
@@ -616,8 +635,9 @@ namespace Gnomish_queuing_device
                         }
 
                         //Update speed to form
+                        int indexOflatest = ProgHelpers.qtimes.IndexOf(ProgHelpers.qtimes.Max());
                         var hoursform = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
-                        double passedform = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions.Min());
+                        double passedform = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest]);
                         double speedform = passedform / hoursform;
                         mainForm.txt_speed.Text = "Speed: " + (int)speedform + " / Hour";
 
