@@ -92,9 +92,9 @@ namespace Gnomish_queuing_device
             }
 
             //Set concurrent errors
-            if (Convert.ToInt32(ProgHelpers.Configuration["RetriesUntilWARN"]) != 0)
+            if (Convert.ToInt32(ProgHelpers.Configuration["Settings:RetriesUntilWARN"]) != 0)
             {
-                ProgHelpers.concurErrors = Convert.ToInt32(ProgHelpers.Configuration["RetriesUntilWARN"]);
+                ProgHelpers.concurErrors = Convert.ToInt32(ProgHelpers.Configuration["Settings:RetriesUntilWARN"]);
             }
             else
             {

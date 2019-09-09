@@ -259,7 +259,7 @@ namespace Gnomish_queuing_device
                         {
                             //More than threshhold -> Run
 
-                            if (ProgHelpers.concurErrors < ProgHelpers.maxErrors)
+                            if (ProgHelpers.errorCount < ProgHelpers.maxErrors)
                             {
                                 //Send only a limited amount of errors 
                                 if (currentUserInformation != null)
@@ -461,7 +461,7 @@ namespace Gnomish_queuing_device
 
                         if (ProgHelpers.errorCount >= ProgHelpers.concurErrors)
                         {
-                            if (ProgHelpers.concurErrors < ProgHelpers.maxErrors)
+                            if (ProgHelpers.errorCount < ProgHelpers.maxErrors)
                             {
                                 PushoverClient.PushResponse response = pclient.Push(
                                  "WARN! Gnomish Queuing Device",
