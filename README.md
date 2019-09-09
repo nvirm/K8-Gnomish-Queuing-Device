@@ -1,5 +1,6 @@
 # K8 Gnomish Queuing Device
 ![alt text](https://github.com/kitsun8/K8-Gnomish-Queuing-Device/blob/master/Screenshot/K8GDC.png)
+Screenshot of 1.0 version, not accurate of current.
 
 # How to use?
 1. Get your Pushbullet API key from https://www.pushbullet.com/#settings (create access token).
@@ -23,7 +24,7 @@ WinForms application that takes a screenshot of a screenarea, passes the image t
 
 In addition, it tracks the total time you have spent in queue (while activated from "Start GQD"), and keeps track of the original queue place you started in, and tracks speed of queue (very simple calculation, no algorithms).
 
-Also, as per 1.1 release, includes Estimated Time Remaining -calculations.
+Also, as per 1.1 release, includes Estimated Time Remaining -calculations. Calculation is done with the "last 15 minutes" of data, so the estimate SHOULD take in account a "heavy end" queue, where the last ~1500 slots open slowly.
 
 # PLEASE NOTE!
 Your World of Warcraft must be running in either Maximized Windowed or Windowed mode, since this application has to be on top of the game.
