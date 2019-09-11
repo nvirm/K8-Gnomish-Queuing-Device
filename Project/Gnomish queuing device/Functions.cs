@@ -210,9 +210,8 @@ namespace Gnomish_queuing_device
                             {
                                 //ETA Available, get time Remaining and time of arrival
                                 
-                                int hours = (int)ProgHelpers.etaCalc.ETR.TotalHours;
-                                int minutes = (int)ProgHelpers.etaCalc.ETR.TotalMinutes;
-                                ProgHelpers.etaString = "Estimated time remaining: " + hours + " Hours, " + minutes + " Minutes.";
+                                TimeSpan etaSpan = ProgHelpers.etaCalc.ETR;
+                                ProgHelpers.etaString = "Estimated time remaining: " + etaSpan.Hours + " Hours, " + etaSpan.Minutes + " Minutes.";
                                 mainForm.txt_etrlabel.Text = ProgHelpers.etaString;
                             }
                         }
