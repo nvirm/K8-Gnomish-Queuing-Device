@@ -227,7 +227,7 @@ namespace Gnomish_queuing_device
 
                         //Update speed to form
                         var hoursform = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
-                        double passedform = Convert.ToDouble(ProgHelpers.qpositions.Max()) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest]);
+                        double passedform = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest]);
                         double speedform = passedform / hoursform;
                         mainForm.txt_speed.Text = "Speed: " + (int)speedform + " / Hour";
 
@@ -273,7 +273,7 @@ namespace Gnomish_queuing_device
                         {
                             //More than threshhold -> Run
 
-                            if (ProgHelpers.errorCount < ProgHelpers.maxErrors)
+                            if (ProgHelpers.sentErrors < ProgHelpers.maxErrors)
                             {
                                 //Send only a limited amount of errors 
                                 if (currentUserInformation != null)
@@ -286,6 +286,8 @@ namespace Gnomish_queuing_device
                                     };
 
                                     PushbulletSharp.Models.Responses.PushResponse response = client.PushNote(request);
+                                    ProgHelpers.sentErrors++;
+                                    mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Error message sent.");
 
                                     return false;
                                 }
@@ -337,7 +339,7 @@ namespace Gnomish_queuing_device
 
                                 if (ProgHelpers.qpositions[indexOflatest] < 1000)
                                 {
-                                    if (sincelastsend.TotalMinutes > 3)
+                                    if (sincelastsend.TotalMinutes > ProgHelpers.sendIntervalSoon)
                                     {
                                         var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
                                         double passed = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest]);
@@ -372,17 +374,18 @@ namespace Gnomish_queuing_device
                                             //Update Pushtime
                                             ProgHelpers.pushTime = DateTime.Now;
                                             ProgHelpers.errorCount = 0; //Reset errors
+                                            ProgHelpers.sentErrors = 0;
 
-                                            return true;
+                                            
                                         }
-                                        return true;
+
                                     }
-                                    return true;
+
                                 }
                                 else
                                 {
                                     //Send status update every 15 mins
-                                    if (sincelastsend.TotalMinutes > 15)
+                                    if (sincelastsend.TotalMinutes > ProgHelpers.sendInterval)
                                     {
                                         var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
                                         double passed = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest]);
@@ -416,11 +419,10 @@ namespace Gnomish_queuing_device
                                             //Update Pushtime
                                             ProgHelpers.pushTime = DateTime.Now;
                                             ProgHelpers.errorCount = 0; //Reset errors
+                                            ProgHelpers.sentErrors = 0;
 
-                                            return true;
 
                                         }
-                                        return true;
                                     }
                                 }
                             }
@@ -477,13 +479,16 @@ namespace Gnomish_queuing_device
 
                         if (ProgHelpers.errorCount >= ProgHelpers.concurErrors)
                         {
-                            if (ProgHelpers.errorCount < ProgHelpers.maxErrors)
+                            if (ProgHelpers.sentErrors < ProgHelpers.maxErrors)
                             {
                                 PushoverClient.PushResponse response = pclient.Push(
                                  "WARN! Gnomish Queuing Device",
                                  bodymsg,
                                  ProgHelpers.pushoverTargetkey
                              );
+
+                                ProgHelpers.sentErrors++;
+                                mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Error message sent.");
                                 //Send only a limited amount of errors 
                             }
                             return false;
@@ -513,7 +518,7 @@ namespace Gnomish_queuing_device
 
                                 //Starting message done
                                 ProgHelpers.startingMsgsent = true;
-
+                                mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Starting message sent.");
                                 return true;
                             }
                             else
@@ -529,7 +534,7 @@ namespace Gnomish_queuing_device
 
                                 if (ProgHelpers.qpositions[indexOflatest2] < 1000)
                                 {
-                                    if (sincelastsend.TotalMinutes > 3)
+                                    if (sincelastsend.TotalMinutes > ProgHelpers.sendIntervalSoon)
                                     {
                                         var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
                                         double passed = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest2]);
@@ -559,7 +564,8 @@ namespace Gnomish_queuing_device
                                             //Update Pushtime
                                             ProgHelpers.pushTime = DateTime.Now;
                                             //Reset errors
-                                            ProgHelpers.errorCount = 0; 
+                                            ProgHelpers.errorCount = 0;
+                                            ProgHelpers.sentErrors = 0;
 
 
                                         return true;
@@ -570,7 +576,7 @@ namespace Gnomish_queuing_device
                                 else
                                 {
                                     //Send status update every 15 mins
-                                    if (sincelastsend.TotalMinutes > 15)
+                                    if (sincelastsend.TotalMinutes > ProgHelpers.sendInterval)
                                         {
                                         var hours = (DateTime.Now - ProgHelpers.startingTime).TotalHours;
                                         double passed = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest2]);
@@ -602,8 +608,10 @@ namespace Gnomish_queuing_device
                                             ProgHelpers.pushTime = DateTime.Now;
                                             //Reset errors
                                             ProgHelpers.errorCount = 0;
+                                            ProgHelpers.sentErrors = 0;
 
-                                            return true;
+                                        mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Position updated");
+                                        return true;
 
                                         }
                                         return true;

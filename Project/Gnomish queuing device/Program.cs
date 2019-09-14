@@ -46,6 +46,7 @@ namespace Gnomish_queuing_device
         public static int concurErrors = 0;
         public static int errorCount = 0;
         public static int maxErrors = 3;
+        public static int sentErrors = 0;
 
         //Enable ETA component and text status for the remaining times.
         public static ETACalculator etaCalc = new ETACalculator(3, 900);
@@ -53,7 +54,14 @@ namespace Gnomish_queuing_device
 
 
         //Threshold for the OCR scan
-        public static int threshold = 45;
+        //Tested:   35 has issues with 2
+        //          40 has issues with 2
+        //          60 has issues with ?? <-- best?
+        //          45 has issues with 1
+        public static int threshold = 60;
+
+        public static int sendInterval = 15;
+        public static int sendIntervalSoon = 3;
 
     }
 
@@ -110,6 +118,18 @@ namespace Gnomish_queuing_device
                 ProgHelpers.concurErrors = 0;
                 //Default errorcount to 0 (MUCH SPAM!)
             }
+
+            //Custom interval for messages
+            if (Convert.ToInt32(ProgHelpers.Configuration["Settings:SendInterval"]) != 0)
+            {
+                ProgHelpers.concurErrors = Convert.ToInt32(ProgHelpers.Configuration["Settings:SendInterval"]);
+            }
+            //Custom interval for messages
+            if (Convert.ToInt32(ProgHelpers.Configuration["Settings:SendIntervalPrio"]) != 0)
+            {
+                ProgHelpers.concurErrors = Convert.ToInt32(ProgHelpers.Configuration["Settings:SendIntervalPrio"]);
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

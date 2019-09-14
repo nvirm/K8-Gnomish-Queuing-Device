@@ -47,7 +47,7 @@
             this.btn_autoRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_autoRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_autoRefresh.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btn_autoRefresh.Location = new System.Drawing.Point(577, 269);
+            this.btn_autoRefresh.Location = new System.Drawing.Point(327, 247);
             this.btn_autoRefresh.Name = "btn_autoRefresh";
             this.btn_autoRefresh.Size = new System.Drawing.Size(78, 31);
             this.btn_autoRefresh.TabIndex = 1;
@@ -64,9 +64,9 @@
             // 
             this.resultBox.BackColor = System.Drawing.Color.Lime;
             this.resultBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.resultBox.Location = new System.Drawing.Point(-1, 0);
+            this.resultBox.Location = new System.Drawing.Point(0, -1);
             this.resultBox.Name = "resultBox";
-            this.resultBox.Size = new System.Drawing.Size(671, 247);
+            this.resultBox.Size = new System.Drawing.Size(417, 234);
             this.resultBox.TabIndex = 7;
             this.resultBox.TabStop = false;
             // 
@@ -74,7 +74,7 @@
             // 
             this.txt_currPosi.AutoSize = true;
             this.txt_currPosi.ForeColor = System.Drawing.SystemColors.Control;
-            this.txt_currPosi.Location = new System.Drawing.Point(8, 274);
+            this.txt_currPosi.Location = new System.Drawing.Point(12, 278);
             this.txt_currPosi.Name = "txt_currPosi";
             this.txt_currPosi.Size = new System.Drawing.Size(201, 13);
             this.txt_currPosi.TabIndex = 8;
@@ -84,7 +84,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.Location = new System.Drawing.Point(8, 308);
+            this.label1.Location = new System.Drawing.Point(12, 312);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(32, 13);
             this.label1.TabIndex = 9;
@@ -94,7 +94,7 @@
             // 
             this.txt_loglabel.AutoSize = true;
             this.txt_loglabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.txt_loglabel.Location = new System.Drawing.Point(46, 308);
+            this.txt_loglabel.Location = new System.Drawing.Point(50, 312);
             this.txt_loglabel.Name = "txt_loglabel";
             this.txt_loglabel.Size = new System.Drawing.Size(245, 13);
             this.txt_loglabel.TabIndex = 10;
@@ -104,7 +104,7 @@
             // 
             this.txt_speed.AutoSize = true;
             this.txt_speed.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.txt_speed.Location = new System.Drawing.Point(8, 261);
+            this.txt_speed.Location = new System.Drawing.Point(12, 265);
             this.txt_speed.Name = "txt_speed";
             this.txt_speed.Size = new System.Drawing.Size(41, 13);
             this.txt_speed.TabIndex = 11;
@@ -114,7 +114,7 @@
             // 
             this.txt_etrlabel.AutoSize = true;
             this.txt_etrlabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.txt_etrlabel.Location = new System.Drawing.Point(8, 287);
+            this.txt_etrlabel.Location = new System.Drawing.Point(12, 291);
             this.txt_etrlabel.Name = "txt_etrlabel";
             this.txt_etrlabel.Size = new System.Drawing.Size(29, 13);
             this.txt_etrlabel.TabIndex = 12;
@@ -125,7 +125,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(667, 330);
+            this.ClientSize = new System.Drawing.Size(415, 330);
             this.Controls.Add(this.txt_etrlabel);
             this.Controls.Add(this.txt_speed);
             this.Controls.Add(this.txt_loglabel);
@@ -133,11 +133,12 @@
             this.Controls.Add(this.txt_currPosi);
             this.Controls.Add(this.resultBox);
             this.Controls.Add(this.btn_autoRefresh);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(683, 369);
             this.MinimizeBox = false;
             this.Name = "Form1";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "K8 Gnomish Queuing Device";
             this.TransparencyKey = System.Drawing.Color.Lime;
