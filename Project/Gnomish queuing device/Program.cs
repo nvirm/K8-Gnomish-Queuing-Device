@@ -60,6 +60,8 @@ namespace Gnomish_queuing_device
         //          45 has issues with 1
         public static int threshold = 60;
 
+        public static int whenPriorityMsg = 1000;
+
         public static int sendInterval = 15;
         public static int sendIntervalSoon = 3;
 
@@ -128,6 +130,11 @@ namespace Gnomish_queuing_device
             if (Convert.ToInt32(ProgHelpers.Configuration["Settings:SendIntervalPrio"]) != 0)
             {
                 ProgHelpers.concurErrors = Convert.ToInt32(ProgHelpers.Configuration["Settings:SendIntervalPrio"]);
+            }
+            //Custom interval for messages
+            if (Convert.ToInt32(ProgHelpers.Configuration["Settings:HighPriorityThreshold"]) != 0)
+            {
+                ProgHelpers.whenPriorityMsg = Convert.ToInt32(ProgHelpers.Configuration["Settings:HighPriorityThreshold"]);
             }
 
             Application.EnableVisualStyles();

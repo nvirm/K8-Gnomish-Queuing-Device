@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +20,43 @@ using PushoverClient;
 using System.Text.RegularExpressions;
 using ImageMagick;
 using Progression.Extras;
+using System.Reflection;
 
 namespace Gnomish_queuing_device
 {
+    public static class LogWriter
+    {
+        private static string m_exePath = string.Empty;
+        public static void LogWrite(string logMessage)
+        {
+            m_exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (!File.Exists(m_exePath + "\\" + "log.txt"))
+                File.Create(m_exePath + "\\" + "log.txt");
+
+            try
+            {
+                using (StreamWriter w = File.AppendText(m_exePath + "\\" + "log.txt"))
+                    AppendLog(logMessage, w);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
+        private static void AppendLog(string logMessage, TextWriter txtWriter)
+        {
+            try
+            {
+                txtWriter.WriteLine("{0} {1} {2}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString(), logMessage);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+    }
+
     class Functions
     {
         //tool to parse text
@@ -45,6 +79,7 @@ namespace Gnomish_queuing_device
         public async Task<bool> UpdateRound()
         {
             Form1 mainForm = (Form1)Application.OpenForms[0];
+            
 
             //Run Updateround
             /*
@@ -230,6 +265,7 @@ namespace Gnomish_queuing_device
                         double passedform = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest]);
                         double speedform = passedform / hoursform;
                         mainForm.txt_speed.Text = "Speed: " + (int)speedform + " / Hour";
+                        LogWriter.LogWrite(mainForm.txt_etrlabel.Text + " | " + mainForm.txt_currPosi.Text + " | " + mainForm.txt_speed.Text + " | Time elapsed: " + span.Hours + " Hours " + span.Minutes + " Minutes.");
 
                     }
 
@@ -325,6 +361,7 @@ namespace Gnomish_queuing_device
 
                                 //Starting message done
                                 ProgHelpers.startingMsgsent = true;
+                                LogWriter.LogWrite("Push message sent.");
                             }
                             else
                             {
@@ -376,7 +413,7 @@ namespace Gnomish_queuing_device
                                             ProgHelpers.errorCount = 0; //Reset errors
                                             ProgHelpers.sentErrors = 0;
 
-                                            
+                                            LogWriter.LogWrite("Push message sent.");
                                         }
 
                                     }
@@ -421,7 +458,7 @@ namespace Gnomish_queuing_device
                                             ProgHelpers.errorCount = 0; //Reset errors
                                             ProgHelpers.sentErrors = 0;
 
-
+                                            LogWriter.LogWrite("Push message sent.");
                                         }
                                     }
                                 }
@@ -450,6 +487,7 @@ namespace Gnomish_queuing_device
 
                                 //Starting message done
                                 ProgHelpers.startingMsgsent = true;
+                                LogWriter.LogWrite("Push message sent.");
                             }
 
                         }
@@ -484,12 +522,15 @@ namespace Gnomish_queuing_device
                                 PushoverClient.PushResponse response = pclient.Push(
                                  "WARN! Gnomish Queuing Device",
                                  bodymsg,
-                                 ProgHelpers.pushoverTargetkey
+                                 ProgHelpers.pushoverTargetkey,
+                                 priority:Priority.Emergency,
+                                 notificationSound: NotificationSound.Alien
                              );
 
                                 ProgHelpers.sentErrors++;
                                 mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Error message sent.");
                                 //Send only a limited amount of errors 
+                                LogWriter.LogWrite("Push message sent.");
                             }
                             return false;
                         }
@@ -519,6 +560,7 @@ namespace Gnomish_queuing_device
                                 //Starting message done
                                 ProgHelpers.startingMsgsent = true;
                                 mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Starting message sent.");
+                                LogWriter.LogWrite("Push message sent.");
                                 return true;
                             }
                             else
@@ -532,7 +574,7 @@ namespace Gnomish_queuing_device
 
                                 int indexOflatest2 = ProgHelpers.qtimes.IndexOf(ProgHelpers.qtimes.Max());
 
-                                if (ProgHelpers.qpositions[indexOflatest2] < 1000)
+                                if (ProgHelpers.qpositions[indexOflatest2] < ProgHelpers.whenPriorityMsg)
                                 {
                                     if (sincelastsend.TotalMinutes > ProgHelpers.sendIntervalSoon)
                                     {
@@ -558,7 +600,9 @@ namespace Gnomish_queuing_device
                                         PushoverClient.PushResponse response = pclient.Push(
                                               "SOON! Gnomish Queuing Device",
                                               bodymsg,
-                                              ProgHelpers.pushoverTargetkey
+                                              ProgHelpers.pushoverTargetkey,
+                                              priority: Priority.High,
+                                              notificationSound: NotificationSound.Tugboat
                                           );
 
                                             //Update Pushtime
@@ -566,8 +610,9 @@ namespace Gnomish_queuing_device
                                             //Reset errors
                                             ProgHelpers.errorCount = 0;
                                             ProgHelpers.sentErrors = 0;
-
-
+                                        
+                                            mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Position updated");
+                                            LogWriter.LogWrite("Push message sent.");
                                         return true;
 
                                     }
@@ -611,6 +656,7 @@ namespace Gnomish_queuing_device
                                             ProgHelpers.sentErrors = 0;
 
                                         mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Position updated");
+                                        LogWriter.LogWrite("Push message sent.");
                                         return true;
 
                                         }
@@ -636,6 +682,7 @@ namespace Gnomish_queuing_device
 
                                 //Starting message done
                                 ProgHelpers.startingMsgsent = true;
+                                LogWriter.LogWrite("Push message sent.");
 
                             }
 
@@ -647,7 +694,7 @@ namespace Gnomish_queuing_device
                         double passedform = Convert.ToDouble(ProgHelpers.startingPosition) - Convert.ToDouble(ProgHelpers.qpositions[indexOflatest]);
                         double speedform = passedform / hoursform;
                         mainForm.txt_speed.Text = "Speed: " + (int)speedform + " / Hour";
-
+                        
                         mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Refresh complete.");
                         return true;
                     }
@@ -666,6 +713,8 @@ namespace Gnomish_queuing_device
                 //Disable autorefresh while updating API
                 
                 mainForm.txt_loglabel.Text = (DateTime.Now.ToLongTimeString() + " Something went wrong...");
+                LogWriter.LogWrite("Something went wrong...");
+
                 //ConsoleLog.AppendText(DateTime.Now.ToLongTimeString() + " Something went wrong...");
                 //logform.ConsoleLog.AppendText(Environment.NewLine);
 

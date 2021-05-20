@@ -50,6 +50,9 @@ namespace Gnomish_queuing_device
 
                 //Reset default values
                 ProgHelpers.qpositions.Clear();
+                ProgHelpers.qtimes.Clear();
+                ProgHelpers.errorCount = 0;
+                ProgHelpers.sentErrors = 0;
                 ProgHelpers.startingTime = DateTime.Now;
                 ProgHelpers.startingMsgsent = false;
                 ProgHelpers.startingPosition = 99999;

@@ -47,7 +47,7 @@
             this.btn_autoRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_autoRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_autoRefresh.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btn_autoRefresh.Location = new System.Drawing.Point(327, 247);
+            this.btn_autoRefresh.Location = new System.Drawing.Point(465, 278);
             this.btn_autoRefresh.Name = "btn_autoRefresh";
             this.btn_autoRefresh.Size = new System.Drawing.Size(78, 31);
             this.btn_autoRefresh.TabIndex = 1;
@@ -66,7 +66,7 @@
             this.resultBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.resultBox.Location = new System.Drawing.Point(0, -1);
             this.resultBox.Name = "resultBox";
-            this.resultBox.Size = new System.Drawing.Size(417, 234);
+            this.resultBox.Size = new System.Drawing.Size(555, 234);
             this.resultBox.TabIndex = 7;
             this.resultBox.TabStop = false;
             // 
@@ -125,7 +125,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(415, 330);
+            this.ClientSize = new System.Drawing.Size(554, 330);
             this.Controls.Add(this.txt_etrlabel);
             this.Controls.Add(this.txt_speed);
             this.Controls.Add(this.txt_loglabel);
@@ -133,6 +133,7 @@
             this.Controls.Add(this.txt_currPosi);
             this.Controls.Add(this.resultBox);
             this.Controls.Add(this.btn_autoRefresh);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(683, 369);
