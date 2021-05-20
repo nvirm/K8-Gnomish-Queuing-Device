@@ -124,12 +124,12 @@ namespace Gnomish_queuing_device
             //Custom interval for messages
             if (Convert.ToInt32(ProgHelpers.Configuration["Settings:SendInterval"]) != 0)
             {
-                ProgHelpers.concurErrors = Convert.ToInt32(ProgHelpers.Configuration["Settings:SendInterval"]);
+                ProgHelpers.sendInterval = Convert.ToInt32(ProgHelpers.Configuration["Settings:SendInterval"]);
             }
             //Custom interval for messages
             if (Convert.ToInt32(ProgHelpers.Configuration["Settings:SendIntervalPrio"]) != 0)
             {
-                ProgHelpers.concurErrors = Convert.ToInt32(ProgHelpers.Configuration["Settings:SendIntervalPrio"]);
+                ProgHelpers.sendIntervalSoon = Convert.ToInt32(ProgHelpers.Configuration["Settings:SendIntervalPrio"]);
             }
             //Custom interval for messages
             if (Convert.ToInt32(ProgHelpers.Configuration["Settings:HighPriorityThreshold"]) != 0)
