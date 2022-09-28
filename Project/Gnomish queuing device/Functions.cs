@@ -183,7 +183,8 @@ namespace Gnomish_queuing_device
 
                 //Find things that you expect to see to gauge whether data is reliable or not
                 //Then check if it contains common "dangerous words
-                if (stringresult.Contains("queue") | stringresult.Contains("Realm is Full") | stringresult.Contains("Position") | stringresult.Contains("Estimated")){
+                if (stringresult.Contains("queue") | stringresult.Contains("Realm is Full") | stringresult.Contains("Position") | stringresult.Contains("Estimated") | stringresult.Contains("migration") | stringresult.Contains("Free character"))
+                {
                     //Expected input, find position of text, get next 5 letters (queue position)
                     ProgHelpers.pushtype = 1;
 
